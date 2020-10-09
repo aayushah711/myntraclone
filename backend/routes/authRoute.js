@@ -31,7 +31,11 @@ router.post('/register', async (req, res, next) => {
         });
 
         const savedUser = await user.save();
-        res.status(200).send(savedUser);
+        const message = {
+            fullName,
+            mobile
+        };
+        res.status(200).send(message);
     } catch (err) {
         res.status(400).send(err);
     }
@@ -52,6 +56,15 @@ router.post('/login', async (req, res, next) => {
     if (!validPassword) {
         return res.status(400).send('Invalid password');
     }
+
+    const { fullName, mobile, email } = user;
+
+    const message = {
+        fullName,
+        mobile,
+        email
+    };
+
     res.send('logged in');
 });
 
