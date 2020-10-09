@@ -65,7 +65,16 @@ router.post('/login', async (req, res, next) => {
         email
     };
 
-    res.send('logged in');
+    res.send(message);
+});
+
+router.delete('/delete/:id', async (req, res) => {
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        res.json('Deletion successful!');
+    } catch (err) {
+        res.status(400).json('Error: ' + err);
+    }
 });
 
 module.exports = router;

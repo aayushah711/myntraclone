@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { userLogin } from '../Redux/auth/actions';
-import { Box, TextField, FormControl, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
+import Box from '@material-ui/core/Box';
+import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles({
     layout: {
@@ -27,8 +31,11 @@ const useStyles = makeStyles({
         marginBottom: '20px'
     },
     formFields: {
-        margin: '10px 0',
-        fontSize: '12px'
+        marginBottom: '10px',
+        width: '100%',
+        '& > *': {
+            fontSize: '12px'
+        }
     }
 });
 
@@ -38,9 +45,12 @@ const Login = (props) => {
     const classes = useStyles(props);
     const isAuth = useSelector((state) => state.auth.isAuth);
     let history = useHistory();
-    if (isAuth) {
-        history.push('/');
-    }
+
+    const dispatch = useDispatch();
+    const handleLogin = (e) => {
+        e.preventDefault();
+        dispatch(userLogin(data));
+    };
     const [ data, setData ] = useState({
         email: '',
         password: ''
@@ -53,45 +63,81 @@ const Login = (props) => {
         });
     };
 
-    const dispatch = useDispatch();
-    const handleLogin = (e) => {
-        e.preventDefault();
-        dispatch(userLogin(data));
-    };
     const { email, password } = data;
+    if (isAuth) {
+        return <Redirect to="/" />;
+    } else {
+        return (
+            <Box className={classes.layout}>
+                <Box className={classes.authPage}>
+                    <FormControl fullWidth={true}>
+                        <Box className={classes.header}>Login to your account</Box>
+                        <Box>
+                            <TextField
+                                required
+                                variant="outlined"
+                                size="small"
+                                label="Email"
+                                type="text"
+                                name="email"
+                                value={email}
+                                onChange={handleChange}
+                                className={classes.formFields}
+                                InputLabelProps={{
+                                    style: {
+                                        fontSize: 12
+                                    },
+                                    width: '100%'
+                                }}
+                                InputProps={{
+                                    style: {
+                                        fontSize: 12
+                                    }
+                                }}
+                            />
+                        </Box>
+                        <Box>
+                            <TextField
+                                required
+                                variant="outlined"
+                                size="small"
+                                label="Password"
+                                type="password"
+                                name="password"
+                                value={password}
+                                onChange={handleChange}
+                                className={classes.formFields}
+                                InputLabelProps={{
+                                    style: {
+                                        fontSize: 12
+                                    }
+                                }}
+                                InputProps={{
+                                    style: {
+                                        fontSize: 12
+                                    }
+                                }}
+                            />
+                        </Box>
 
-    return (
-        <Box className={classes.layout}>
-            <Box className={classes.authPage}>
-                <FormControl>
-                    <Box className={classes.header}>Login to your account</Box>
-                    <TextField
+                        <Button variant="contained" type="submit" color="primary" onClick={handleLogin}>
+                            Login
+                        </Button>
+                    </FormControl>
+                    <Divider style={{ margin: '50px 0' }} variant="middle" fullWidth />
+                    <Button
+                        fullWidth
                         variant="outlined"
-                        size="small"
-                        label="Email"
-                        type="text"
-                        name="email"
-                        value={email}
-                        onChange={handleChange}
-                        className={classes.formFields}
-                    />
-                    <TextField
-                        variant="outlined"
-                        size="small"
-                        label="Password"
-                        type="password"
-                        name="password"
-                        value={password}
-                        onChange={handleChange}
-                    />
-
-                    <Button variant="contained" type="submit" color="primary" onClick={handleLogin}>
-                        Login
+                        type="submit"
+                        color="secondary"
+                        onClick={() => history.push('/register')}
+                    >
+                        CREATE NEW ACCOUNT
                     </Button>
-                </FormControl>
+                </Box>
             </Box>
-        </Box>
-    );
+        );
+    }
 };
 
 export default Login;

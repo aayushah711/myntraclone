@@ -5,7 +5,8 @@ import { userRegister } from '../Redux/auth/actions';
 const Register = (props) => {
     window.document.title = 'Register';
 
-    const isAuth = useSelector((state) => state.auth.isAuth);
+    // const isAuth = useSelector((state) => state.auth.isAuth);
+    const message = useSelector((state) => state.auth.message);
     const [ data, setData ] = useState({
         email: '',
         password: '',
@@ -27,7 +28,6 @@ const Register = (props) => {
         dispatch(userRegister(data));
     };
     const { email, password, fullName, mobile, gender } = data;
-    console.log(isAuth);
 
     return (
         <div>
@@ -66,6 +66,7 @@ const Register = (props) => {
 
                 <input type="submit" value="register" onClick={handleRegister} />
             </form>
+            {message && <div>{message}</div>}
         </div>
     );
 };
