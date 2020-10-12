@@ -1,12 +1,4 @@
-import {
-    REGISTER_USER_REQUEST,
-    REGISTER_USER_SUCCESS,
-    REGISTER_USER_FAILURE,
-    LOGIN_USER_REQUEST,
-    LOGIN_USER_SUCCESS,
-    LOGIN_USER_FAILURE,
-    LOGOUT_USER
-} from './actionTypes';
+import { LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGIN_USER_FAILURE, LOGOUT_USER } from './actionTypes';
 
 const initState = {
     isLoading: false,
@@ -20,31 +12,6 @@ const initState = {
 
 const authReducer = (state = initState, { type, payload }) => {
     switch (type) {
-        case REGISTER_USER_REQUEST:
-            return {
-                ...state,
-                isLoading: true,
-                error: false
-            };
-
-        case REGISTER_USER_SUCCESS:
-            return {
-                ...state,
-                isLoading: false,
-                error: false,
-                message: 'User Registered Successfully!',
-                fullName: payload.fullName,
-                mobile: payload.mobile
-            };
-
-        case REGISTER_USER_FAILURE:
-            return {
-                ...state,
-                isLoading: false,
-                error: true,
-                message: 'Registration was unsuccessful. Please try Again!'
-            };
-
         case LOGIN_USER_REQUEST:
             return {
                 ...state,
