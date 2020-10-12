@@ -8,6 +8,7 @@ import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
+import Snackbar from './Snackbar';
 
 const useStyles = makeStyles({
     layout: {
@@ -64,6 +65,8 @@ const Login = (props) => {
     };
 
     const { email, password } = data;
+    console.log(props);
+
     if (isAuth) {
         return <Redirect to="/" />;
     } else {
@@ -124,7 +127,7 @@ const Login = (props) => {
                             Login
                         </Button>
                     </FormControl>
-                    <Divider style={{ margin: '50px 0' }} variant="middle" fullWidth />
+                    <Divider style={{ margin: '50px 0' }} variant="middle" />
                     <Button
                         fullWidth
                         variant="outlined"
@@ -135,6 +138,9 @@ const Login = (props) => {
                         CREATE NEW ACCOUNT
                     </Button>
                 </Box>
+                {history.action === 'REPLACE' ? (
+                    <Snackbar severity="success" message="Registered user successfully!" />
+                ) : null}
             </Box>
         );
     }

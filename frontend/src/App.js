@@ -1,15 +1,8 @@
 import React from 'react';
 import './App.css';
 import PublicRoutes from './Routes/PublicRoutes';
-import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Navbar from './Components/Navbar/Navbar';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        color: theme.status.danger
-    },
-    checked: {}
-}));
 
 const theme = createMuiTheme({
     palette: {
