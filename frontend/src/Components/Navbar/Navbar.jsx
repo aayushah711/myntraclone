@@ -35,6 +35,7 @@ export default function Navbar(props) {
             <Link to="/kids">KIDS</Link>
             <Link to="/homeLiving">HOME & LIVING</Link>
             <Link to="/essentials">ESSENTIALS</Link>
+            <Link to="/posts">POSTS</Link>
             <Link to="/login">
                 <div>
                     <img src="./resources/profile.png" alt="PROFILE" height="20" width="20" />
