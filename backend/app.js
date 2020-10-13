@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 
 const authRoute = require('./routes/authRoute');
+const paymentRoute = require('./routes/paymentRoute');
 
 const app = express();
 
@@ -24,6 +25,8 @@ mongoose.connect(
 );
 
 app.use('/api/users', authRoute);
+
+app.use('/api/payment', paymentRoute);
 
 const port = 5000;
 app.listen(port, () => {
