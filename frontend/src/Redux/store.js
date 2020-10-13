@@ -1,8 +1,10 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import appReducer from './app/reducer';
 import authReducer from './auth/reducer';
 
 const rootReducer = combineReducers({
-    auth: authReducer
+    auth: authReducer,
+    app: appReducer
 });
 
 const thunk = (store) => (next) => (action) => {

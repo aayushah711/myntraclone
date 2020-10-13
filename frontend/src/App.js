@@ -3,6 +3,8 @@ import './App.css';
 import PublicRoutes from './Routes/PublicRoutes';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Navbar from './Components/Navbar/Navbar';
+import Snackbar from './Snackbar';
+import Spinner from './Spinner';
 
 const theme = createMuiTheme({
     palette: {
@@ -17,6 +19,8 @@ function App(props) {
             <div className="App">
                 <Navbar />
                 <PublicRoutes {...props} />
+                <Snackbar />
+                <Spinner />
             </div>
         </ThemeProvider>
     );

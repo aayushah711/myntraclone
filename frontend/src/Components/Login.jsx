@@ -8,7 +8,6 @@ import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
-import Snackbar from './Snackbar';
 
 const useStyles = makeStyles({
     layout: {
@@ -137,9 +136,6 @@ const Login = (props) => {
                         CREATE NEW ACCOUNT
                     </Button>
                 </Box>
-                {history.action === 'REPLACE' ? (
-                    <Snackbar severity="success" message="Registered user successfully!" />
-                ) : null}
             </Box>
         );
     }

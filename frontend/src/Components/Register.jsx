@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import Snackbar from './Snackbar';
 import axios from '../Redux/axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
+import { changeSpinner, openSnackbar } from '../Redux/app/actions';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles({
     layout: {
@@ -43,9 +44,8 @@ const Register = (props) => {
     const classes = useStyles(props);
 
     // const isAuth = useSelector((state) => state.auth.isAuth);
+    const dispatch = useDispatch();
     const [ error, setError ] = useState(true);
-    const [ loading, setLoading ] = useState(false);
-    const [ message, setMessage ] = useState(false);
 
     const [ data, setData ] = useState({
         email: '',
@@ -64,7 +64,7 @@ const Register = (props) => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        setMessage(false);
+        dispatch(changeSpinner(true));
         const { email, password, fullName, mobile, gender } = data;
         try {
             let res = await axios({
@@ -79,23 +79,32 @@ const Register = (props) => {
                 }
             });
             console.log('res', res);
+            dispatch(
+                openSnackbar({
+                    message: 'Success',
+                    severity: 'success'
+                })
+            );
             setError(false);
-            setLoading(false);
-            setMessage('Success');
+            dispatch(changeSpinner(false));
         } catch (err) {
             console.log('err', err);
+            dispatch(
+                openSnackbar({
+                    message: err.response.data,
+                    severity: 'error'
+                })
+            );
             setError(true);
-            setLoading(false);
-            setMessage(err.response.data);
+            dispatch(changeSpinner(false));
         }
-        // dispatch(userRegister(data));
     };
     const { email, password, fullName, mobile, gender } = data;
 
     if (!error) {
         return (
             <div>
-                <Redirect to="/login" message={message} />
+                <Redirect to="/login" />
             </div>
         );
     } else {
@@ -232,7 +241,6 @@ const Register = (props) => {
                         </FormControl>
                     </Box>
                 </Box>
-                {message && <Snackbar severity="error" message={message} />}
             </div>
         );
     }
