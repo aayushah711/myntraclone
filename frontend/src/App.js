@@ -9,7 +9,8 @@ import Spinner from './Spinner';
 const theme = createMuiTheme({
     palette: {
         primary: { main: '#ff3f6c' },
-        secondary: { main: '#282c3f' }
+        secondary: { main: '#282c3f' },
+        green: { main: '#0bc6a0' }
     }
 });
 

@@ -8,6 +8,10 @@ import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import { changeSpinner, openSnackbar } from '../Redux/app/actions';
 import { useDispatch } from 'react-redux';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
 
 const useStyles = makeStyles({
     layout: {
@@ -36,6 +40,15 @@ const useStyles = makeStyles({
         '& > *': {
             fontSize: '12px'
         }
+    },
+    radio: {
+        fontSize: '12px',
+        '& > *': {
+            fontSize: '12px'
+        }
+    },
+    button: {
+        marginTop: '20px'
     }
 });
 
@@ -52,7 +65,7 @@ const Register = (props) => {
         password: '',
         fullName: '',
         mobile: '',
-        gender: ''
+        gender: 'female'
     });
 
     const handleChange = (e) => {
@@ -167,7 +180,7 @@ const Register = (props) => {
                                     required
                                     variant="outlined"
                                     size="small"
-                                    label="fullName"
+                                    label="Full Name"
                                     type="text"
                                     name="fullName"
                                     value={fullName}
@@ -191,7 +204,7 @@ const Register = (props) => {
                                     required
                                     variant="outlined"
                                     size="small"
-                                    label="mobile"
+                                    label="Mobile"
                                     type="number"
                                     name="mobile"
                                     value={mobile}
@@ -210,32 +223,33 @@ const Register = (props) => {
                                     }}
                                 />
                             </Box>
-                            <Box>
-                                <TextField
-                                    required
-                                    variant="outlined"
-                                    size="small"
-                                    label="gender"
-                                    type="text"
-                                    name="gender"
-                                    value={gender}
-                                    onChange={handleChange}
-                                    className={classes.formFields}
-                                    InputLabelProps={{
-                                        style: {
-                                            fontSize: 12
-                                        },
-                                        width: '100%'
-                                    }}
-                                    InputProps={{
-                                        style: {
-                                            fontSize: 12
-                                        }
-                                    }}
-                                />
-                            </Box>
 
-                            <Button variant="contained" type="submit" color="primary" onClick={handleRegister}>
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                                <FormLabel color="secondary" component="legend">
+                                    Gender
+                                </FormLabel>
+                                <RadioGroup row name="gender" value={gender} onChange={handleChange}>
+                                    <FormControlLabel
+                                        value="female"
+                                        control={<Radio size="small" />}
+                                        label="Female"
+                                        className={classes.radio}
+                                    />
+                                    <FormControlLabel
+                                        value="male"
+                                        control={<Radio size="small" />}
+                                        label="Male"
+                                        className={classes.radio}
+                                    />
+                                </RadioGroup>
+                            </Box>
+                            <Button
+                                className={classes.button}
+                                variant="contained"
+                                type="submit"
+                                color="primary"
+                                onClick={handleRegister}
+                            >
                                 Register
                             </Button>
                         </FormControl>
