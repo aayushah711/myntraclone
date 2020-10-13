@@ -65,7 +65,6 @@ const Login = (props) => {
     };
 
     const { email, password } = data;
-    console.log(props);
 
     if (isAuth) {
         return <Redirect to="/" />;
