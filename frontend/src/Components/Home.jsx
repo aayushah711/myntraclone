@@ -7,12 +7,11 @@ const Home = (props) => {
     window.document.title = 'Welcome!';
 
     const isAuth = useSelector((state) => state.auth.isAuth);
-    const fullName = useSelector((state) => state.auth.fullName);
     const dispatch = useDispatch();
 
     return (
         <div>
-            <div>{isAuth ? 'Hello ' + fullName : 'Hello stranger'}</div>
+            <div>{isAuth ? 'Hello ' : 'Welcome'}</div>
             <div>
                 {isAuth ? (
                     <Button variant="contained" type="submit" color="primary" onClick={() => dispatch(logoutUser())}>

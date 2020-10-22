@@ -1,14 +1,22 @@
 import { LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGIN_USER_FAILURE, LOGOUT_USER } from './actionTypes';
+import { loadData, saveData, removeData } from '../localStorage';
 
-const initState = {
+let initState = {
     isLoading: false,
     error: false,
     message: '',
-    fullName: '',
-    mobile: '',
-    email: '',
-    isAuth: false
+    isAuth: false,
+    accessToken: ''
 };
+
+let accessToken = loadData('accessToken');
+if (accessToken) {
+    initState = {
+        ...initState,
+        isAuth: true,
+        accessToken: accessToken
+    };
+}
 
 const authReducer = (state = initState, { type, payload }) => {
     switch (type) {
@@ -20,15 +28,14 @@ const authReducer = (state = initState, { type, payload }) => {
             };
 
         case LOGIN_USER_SUCCESS:
+            saveData('accessToken', payload.accessToken);
             return {
                 ...state,
                 isLoading: false,
                 error: true,
-                email: payload.email,
-                mobile: payload.mobile,
-                fullName: payload.fullName,
                 isAuth: true,
-                message: 'Login Successful!'
+                message: 'Login Successful!',
+                accessToken: payload.accessToken
             };
 
         case LOGIN_USER_FAILURE:
@@ -39,6 +46,7 @@ const authReducer = (state = initState, { type, payload }) => {
                 message: 'Something went wrong...'
             };
         case LOGOUT_USER:
+            removeData('accessToken');
             return {
                 ...state,
                 isAuth: false,

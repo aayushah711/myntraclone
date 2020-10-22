@@ -8,6 +8,7 @@ import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
+import GitHubLogin from 'react-github-login';
 
 const useStyles = makeStyles({
     layout: {
@@ -62,6 +63,9 @@ const Login = (props) => {
             [e.target.name]: e.target.value
         });
     };
+
+    const onSuccess = (response) => console.log(response);
+    const onFailure = (response) => console.error(response);
 
     const { email, password } = data;
 
@@ -125,6 +129,12 @@ const Login = (props) => {
                             Login
                         </Button>
                     </FormControl>
+                    <GitHubLogin
+                        clientId="Iv1.975107356642b2fb"
+                        redirectUri="http://localhost:5000/login/github/callback"
+                        onSuccess={onSuccess}
+                        onFailure={onFailure}
+                    />
                     <Divider style={{ margin: '50px 0' }} variant="middle" />
                     <Button
                         fullWidth

@@ -1,8 +1,9 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
 const { registerValidation, loginValidation } = require('./validation');
-const jwt = require('jsonwebtoken');
+const { getAccessToken, fetchGitHubUser } = require('./githubAuth');
 
 const getUsers = async (req, res) => {
     const userExists = await User.findOne({ email: req.user.email }, (err) => {
@@ -83,4 +84,19 @@ const loginUser = async (req, res, next) => {
     return res.json({ accessToken: accessToken });
 };
 
-module.exports = { getUsers, registerUser, loginUser, deleteUser };
+loginGithub = (req, res) => {
+    const client_id = process.env.CLIENT_ID;
+    const redirectUri = 'http://localhost:5000/login/github/callback';
+    const url = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUri}`;
+    res.redirect(url);
+};
+
+loginCallbackGithub = async (req, res) => {
+    const code = req.query.code;
+    console.log(code);
+    const access_token = await getAccessToken(code);
+    const user = await fetchGitHubUser(access_token);
+    res.json(user);
+};
+
+module.exports = { getUsers, registerUser, loginUser, loginGithub, loginCallbackGithub, deleteUser };

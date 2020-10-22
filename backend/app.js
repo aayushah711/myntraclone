@@ -24,6 +24,10 @@ mongoose.connect(
     }
 );
 
+app.get('/', (req, res) => {
+    res.send('OAuth with Github');
+});
+
 app.use('/api/users', authRoute);
 
 app.use('/api/payment', paymentRoute);
