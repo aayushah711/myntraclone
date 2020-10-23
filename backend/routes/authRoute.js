@@ -11,6 +11,10 @@ const {
 } = require('../controllers/userController');
 
 // router.get('/', getUsers);
+router.get('/', (req, res) => {
+    res.send('OAuth with Github');
+});
+
 router.get('/', authenticateToken, getUsers);
 
 router.post('/register', registerUser);

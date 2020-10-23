@@ -8,7 +8,9 @@ import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
+import axios from 'axios';
 import GitHubLogin from 'react-github-login';
+import { loginUserSuccess } from '../Redux/auth/actions';
 
 const useStyles = makeStyles({
     layout: {
@@ -64,9 +66,20 @@ const Login = (props) => {
         });
     };
 
-    const onSuccess = (response) => console.log(response);
-    const onFailure = (response) => console.error(response);
+    const onSuccess = ({ code }) => {
+        console.log('hello', code);
+        // dispatch(loginUserSuccess(response));
+    };
+    const onFailure = (response) => console.error('bye', response);
 
+    const githubAuth = () => {
+        axios({
+            method: 'GET',
+            url: 'http://localhost:5000/api/users/login/github'
+        })
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
+    };
     const { email, password } = data;
 
     if (isAuth) {
@@ -129,12 +142,13 @@ const Login = (props) => {
                             Login
                         </Button>
                     </FormControl>
-                    <GitHubLogin
+                    {/* <GitHubLogin
                         clientId="Iv1.975107356642b2fb"
-                        redirectUri="http://localhost:5000/login/github/callback"
+                        redirectUri="http://localhost:5000/api/users/login/github/callback"
                         onSuccess={onSuccess}
                         onFailure={onFailure}
-                    />
+                    /> */}
+                    <button onClick={githubAuth}>Github</button>
                     <Divider style={{ margin: '50px 0' }} variant="middle" />
                     <Button
                         fullWidth

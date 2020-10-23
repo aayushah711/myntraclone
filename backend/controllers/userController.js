@@ -1,5 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const User = require('../models/User');
 const { registerValidation, loginValidation } = require('./validation');
@@ -85,18 +88,34 @@ const loginUser = async (req, res, next) => {
 };
 
 loginGithub = (req, res) => {
-    const client_id = process.env.CLIENT_ID;
-    const redirectUri = 'http://localhost:5000/login/github/callback';
+    const client_id = process.env.GITHUB_CLIENT_ID;
+    // const redirectUri = 'http://localhost:5000/api/users/login/github/callback';
+    const redirectUri = 'http://localhost:3000/login';
     const url = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUri}`;
     res.redirect(url);
 };
 
 loginCallbackGithub = async (req, res) => {
     const code = req.query.code;
-    console.log(code);
     const access_token = await getAccessToken(code);
+    console.log('access_token', access_token);
     const user = await fetchGitHubUser(access_token);
-    res.json(user);
+    const { name, email, location } = user;
+    if (email) {
+        const userExists = await User.findOne({ email: email }, (err, user) => {
+            if (err) {
+                return res.status(400).json({ message: 'Something went wrong!' });
+            } else {
+                if (user) {
+                    const tokenisedUser = { email: user.email };
+                    const accessToken = jwt.sign(tokenisedUser, process.env.SECRET_KEY_TO_ACCESS, { expiresIn: '60s' });
+                    return res.json({ accessToken: accessToken });
+                }
+            }
+        });
+    } else {
+        return res.json(user);
+    }
 };
 
 module.exports = { getUsers, registerUser, loginUser, loginGithub, loginCallbackGithub, deleteUser };
