@@ -17,14 +17,25 @@ const getUsers = async (req, res) => {
     const { fullName, mobile } = userExists;
     return res.status(200).json({ fullName, mobile });
 };
-// const getUsers = (req, res) => {
-//     User.find().then((users) => res.status(200).json(users)).catch((err) => res.status(400).json(err));
-// };
 
 const deleteUser = async (req, res) => {
     try {
         await User.findByIdAndDelete(req.params.id);
         res.json('Deletion successful!');
+    } catch (err) {
+        res.status(400).json('Error: ' + err);
+    }
+};
+
+const deleteAllUsers = async (req, res) => {
+    try {
+        await User.remove({}, (err) => {
+            if (err) {
+                res.json('Could not delete all users!');
+            } else {
+                res.json('Deletion successful!');
+            }
+        });
     } catch (err) {
         res.status(400).json('Error: ' + err);
     }
@@ -87,35 +98,45 @@ const loginUser = async (req, res, next) => {
     return res.json({ accessToken: accessToken });
 };
 
-loginGithub = (req, res) => {
-    const client_id = process.env.GITHUB_CLIENT_ID;
-    // const redirectUri = 'http://localhost:5000/api/users/login/github/callback';
-    const redirectUri = 'http://localhost:3000/login';
-    const url = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUri}`;
-    res.redirect(url);
-};
-
 loginCallbackGithub = async (req, res) => {
     const code = req.query.code;
     const access_token = await getAccessToken(code);
-    console.log('access_token', access_token);
     const user = await fetchGitHubUser(access_token);
+    console.log('user', user);
     const { name, email, location } = user;
     if (email) {
         const userExists = await User.findOne({ email: email }, (err, user) => {
             if (err) {
+                // some unknown error
                 return res.status(400).json({ message: 'Something went wrong!' });
             } else {
                 if (user) {
+                    // if user exists
                     const tokenisedUser = { email: user.email };
                     const accessToken = jwt.sign(tokenisedUser, process.env.SECRET_KEY_TO_ACCESS, { expiresIn: '60s' });
                     return res.json({ accessToken: accessToken });
                 }
             }
         });
+        if (!userExists) {
+            const password = email + process.env.SECRET_KEY_TO_ACCESS;
+            const hashedPassword = await bcrypt.hash(password, await bcrypt.genSalt(10));
+
+            const user = new User({
+                email,
+                password: hashedPassword,
+                fullName: name
+            });
+
+            const savedUser = await user.save();
+
+            const tokenisedUser = { email: savedUser.email };
+            const accessToken = jwt.sign(tokenisedUser, process.env.SECRET_KEY_TO_ACCESS, { expiresIn: '60s' });
+            return res.json({ accessToken: accessToken });
+        }
     } else {
-        return res.json(user);
+        return res.status(400).json({ message: 'Something went wrong!' });
     }
 };
 
-module.exports = { getUsers, registerUser, loginUser, loginGithub, loginCallbackGithub, deleteUser };
+module.exports = { getUsers, registerUser, loginUser, loginCallbackGithub, deleteUser, deleteAllUsers };

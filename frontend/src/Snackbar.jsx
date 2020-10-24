@@ -19,11 +19,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CustomizedSnackbars() {
-    const state = useSelector((state) => state.app);
+    const appState = useSelector((state) => state.app);
     const dispatch = useDispatch();
 
     const classes = useStyles();
-    const { open, message, severity } = state;
+    const { open, message, severity } = appState;
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -35,7 +35,7 @@ export default function CustomizedSnackbars() {
 
     return (
         <div className={classes.root}>
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity={severity}>
                     {message}
                 </Alert>

@@ -1,7 +1,10 @@
 import React from 'react';
 import Axios from 'axios';
+import { openSnackbar } from '../Redux/app/actions';
+import { useDispatch } from 'react-redux';
 
 const Payment = (props) => {
+    const dispatch = useDispatch();
     const paymentHandler = async (e) => {
         e.preventDefault();
 
@@ -21,10 +24,20 @@ const Payment = (props) => {
                     const successObj = JSON.parse(captureResponse.data);
                     const captured = successObj.captured;
                     if (captured) {
-                        console.log('success');
+                        dispatch(
+                            openSnackbar({
+                                message: 'Payment successful!',
+                                severity: 'success'
+                            })
+                        );
                     }
                 } catch (err) {
-                    console.log(err);
+                    dispatch(
+                        openSnackbar({
+                            message: err,
+                            severity: 'error'
+                        })
+                    );
                 }
             },
             theme: {

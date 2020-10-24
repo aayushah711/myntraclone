@@ -3,6 +3,7 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const Razorpay = require('razorpay');
 const dotenv = require('dotenv');
+var request = require('request');
 
 dotenv.config();
 
@@ -19,11 +20,12 @@ router.get('/order', (req, res) => {
             receipt: uuidv4(),
             payment_capture: 0
         };
-        instance.orders.create(options, (err, order) => {
-            if (err) {
+        instance.orders.create(options, (error, order) => {
+            if (error) {
                 return res.status(500).json({ message: 'Something went wrong' });
+            } else {
+                return res.status(200).json(order);
             }
-            return res.status(200).json(order);
         });
     } catch (err) {
         return res.status(500).json({
@@ -44,10 +46,10 @@ router.post('/capture/:paymentId', (req, res) => {
                     currency: 'INR'
                 }
             },
-            async function(err, res, body) {
-                if (err) {
+            async function(error, response, body) {
+                if (error) {
                     return res.status(500).json({
-                        message: 'Something Went Wrong'
+                        message: 'Something Went Wrong1'
                     });
                 }
                 return res.status(200).json(body);
@@ -55,7 +57,7 @@ router.post('/capture/:paymentId', (req, res) => {
         );
     } catch (err) {
         return res.status(500).json({
-            message: 'Something Went Wrong'
+            message: 'Something Went Wrong2'
         });
     }
 });

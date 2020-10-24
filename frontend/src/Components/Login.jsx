@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { userLogin } from '../Redux/auth/actions';
+import { loginUserFailure, userLogin, loginUserSuccess } from '../Redux/auth/actions';
+import { openSnackbar, changeSpinner } from '../Redux/app/actions';
 import { makeStyles } from '@material-ui/core/styles';
 import { Redirect, useHistory } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
@@ -10,7 +11,6 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import axios from 'axios';
 import GitHubLogin from 'react-github-login';
-import { loginUserSuccess } from '../Redux/auth/actions';
 
 const useStyles = makeStyles({
     layout: {
@@ -67,19 +67,46 @@ const Login = (props) => {
     };
 
     const onSuccess = ({ code }) => {
-        console.log('hello', code);
-        // dispatch(loginUserSuccess(response));
-    };
-    const onFailure = (response) => console.error('bye', response);
-
-    const githubAuth = () => {
+        dispatch(changeSpinner(true));
         axios({
             method: 'GET',
-            url: 'http://localhost:5000/api/users/login/github'
+            url: 'http://localhost:5000/api/users/login/github/callback',
+            params: {
+                code: code
+            }
         })
-            .then((res) => console.log(res))
-            .catch((err) => console.log(err));
+            .then((res) => {
+                console.log(res);
+                dispatch(changeSpinner(false));
+                dispatch(loginUserSuccess(res.data));
+                dispatch(
+                    openSnackbar({
+                        message: 'Login Successful',
+                        severity: 'success'
+                    })
+                );
+            })
+            .catch((err) => {
+                dispatch(changeSpinner(false));
+                dispatch(loginUserFailure(err));
+                dispatch(
+                    openSnackbar({
+                        message: 'Something went wrong',
+                        severity: 'error'
+                    })
+                );
+            });
     };
+    const onFailure = (response) => {
+        console.log(response);
+        dispatch(
+            openSnackbar({
+                message: 'Something went wrong',
+                severity: 'error'
+            })
+        );
+    };
+
     const { email, password } = data;
 
     if (isAuth) {
@@ -142,13 +169,12 @@ const Login = (props) => {
                             Login
                         </Button>
                     </FormControl>
-                    {/* <GitHubLogin
-                        clientId="Iv1.975107356642b2fb"
-                        redirectUri="http://localhost:5000/api/users/login/github/callback"
+                    <GitHubLogin
+                        clientId="Iv1.8d95bbd804dc8983"
+                        redirectUri="http://localhost:3000/login"
                         onSuccess={onSuccess}
                         onFailure={onFailure}
-                    /> */}
-                    <button onClick={githubAuth}>Github</button>
+                    />
                     <Divider style={{ margin: '50px 0' }} variant="middle" />
                     <Button
                         fullWidth
