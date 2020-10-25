@@ -102,7 +102,6 @@ loginCallbackGithub = async (req, res) => {
     const code = req.query.code;
     const access_token = await getAccessToken(code);
     const user = await fetchGitHubUser(access_token);
-    console.log('user', user);
     const { name, email, location } = user;
     if (email) {
         const userExists = await User.findOne({ email: email }, (err, user) => {
@@ -113,7 +112,7 @@ loginCallbackGithub = async (req, res) => {
                 if (user) {
                     // if user exists
                     const tokenisedUser = { email: user.email };
-                    const accessToken = jwt.sign(tokenisedUser, process.env.SECRET_KEY_TO_ACCESS, { expiresIn: '60s' });
+                    const accessToken = jwt.sign(tokenisedUser, process.env.SECRET_KEY_TO_ACCESS);
                     return res.json({ accessToken: accessToken });
                 }
             }
@@ -131,7 +130,7 @@ loginCallbackGithub = async (req, res) => {
             const savedUser = await user.save();
 
             const tokenisedUser = { email: savedUser.email };
-            const accessToken = jwt.sign(tokenisedUser, process.env.SECRET_KEY_TO_ACCESS, { expiresIn: '60s' });
+            const accessToken = jwt.sign(tokenisedUser, process.env.SECRET_KEY_TO_ACCESS);
             return res.json({ accessToken: accessToken });
         }
     } else {
